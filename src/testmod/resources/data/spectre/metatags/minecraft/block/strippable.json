@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values":{
+		"minecraft:quartz_pillar": {
+			"result": "minecraft:purpur_pillar",
+			"transformer": "default_state"
+		}
+	}
+}

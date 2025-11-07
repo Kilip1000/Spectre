@@ -1,0 +1,22 @@
+{
+	"required": true,
+	"package": "dev.spiritstudios.spectre.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"screenshake.AccessibilityOptionsScreenMixin",
+		"screenshake.GameRendererMixin",
+		"screenshake.OptionsMixin",
+		"world.entity.ClientLevel$EntityCallbacksMixin",
+		"world.entity.EntityRendererMixin",
+		"world.entity.LivingEntityRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	},
+	"mixins": [
+		"NarratorMixin"
+	]
+}

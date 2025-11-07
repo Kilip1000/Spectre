@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "spectre",
+  "version": "${version}",
+  "name": "Spectre",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/SpiritGameStudios/Spectre",
+    "issues": "https://github.com/SpiritGameStudios/Spectre/issues"
+  },
+  "license": "MPL-2.0",
+  "icon": "assets/spectre/icon.png",
+  "environment": "*",
+  "entrypoints": {
+	  "main": ["dev.spiritstudios.spectre.impl.Spectre"],
+	  "client": [
+        "dev.spiritstudios.spectre.impl.client.SpectreClient"
+      ]
+  },
+  "mixins": [
+    "spectre.mixins.json",
+    {
+      "config": "spectre.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.3",
+    "minecraft": "~1.21.10-",
+    "fabric-api": "*",
+    "java": ">=21"
+  },
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/TTmx7d2axf",
+				"modmenu.github_releases": "https://github.com/SpiritGameStudios/Spectre/releases"
+			},
+			"badges": [
+				"library"
+			]
+		},
+		"loom:injected_interfaces": {
+			"net/minecraft/class_6880": [
+				"dev/spiritstudios/spectre/api/registry/MetatagHolder<TT;>"
+			],
+			"net/minecraft/class_1299": [
+				"dev/spiritstudios/spectre/api/registry/MetatagHolder<Lnet/minecraft/class_1299<*>;>"
+			],
+			"net/minecraft/class_2248": [
+				"dev/spiritstudios/spectre/api/registry/MetatagHolder<Lnet/minecraft/class_2248;>"
+			],
+			"net/minecraft/class_1792": [
+				"dev/spiritstudios/spectre/api/registry/MetatagHolder<Lnet/minecraft/class_1792;>"
+			]
+		}
+	}
+}

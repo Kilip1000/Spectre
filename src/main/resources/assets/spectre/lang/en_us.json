@@ -1,0 +1,5 @@
+{
+    "options.spectre.screenshake_intensity": "Screenshake Intensity",
+    "options.spectre.screenshake_intensity.description": "Controls the intensity of screenshake effects made using the Spectre API.",
+	"commands.components.no_components": "No components found"
+}
