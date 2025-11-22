@@ -65,6 +65,8 @@ public final class CreativeModeTabReloader extends SimpleResourceReloader<Map<Re
 
 	private CreativeModeTabReloader() {
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
+			if (player.level().getServer().isSingleplayerOwner(player.nameAndId())) return;
+
 			ServerPlayNetworking.send(player, syncPayload);
 		});
 	}

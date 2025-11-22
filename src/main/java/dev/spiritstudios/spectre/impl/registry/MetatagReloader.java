@@ -44,6 +44,8 @@ public final class MetatagReloader extends SimpleResourceReloader<List<MetatagCo
 
 	private MetatagReloader() {
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
+			if (player.level().getServer().isSingleplayerOwner(player.nameAndId())) return;
+
 			ServerPlayNetworking.send(player, syncPayload);
 		});
 	}
