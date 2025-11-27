@@ -3,7 +3,7 @@ package dev.spiritstudios.spectre.impl.world.entity.animation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.spiritstudios.spectre.api.world.entity.animation.AnimationState;
+import dev.spiritstudios.spectre.api.world.entity.animation.AnimationControllerState;
 import dev.spiritstudios.spectre.api.world.entity.animation.BooleanExpression;
 import net.minecraft.util.ExtraCodecs;
 
@@ -48,13 +48,13 @@ public record AnimationControllerDesc(
 		}
 	}
 
-	public AnimationState bake() {
-		Map<String, AnimationState> states = this.states.entrySet().stream()
+	public AnimationControllerState bake() {
+		Map<String, AnimationControllerState> states = this.states.entrySet().stream()
 			.collect(Collectors.toMap(
 				Map.Entry::getKey,
 				entry -> {
 					var state = entry.getValue();
-					return new AnimationState(
+					return new AnimationControllerState(
 						state.animations(),
 						new ArrayList<>(state.transitions().size()),
 						state.blendTransition
@@ -66,7 +66,7 @@ public record AnimationControllerDesc(
 			var unbaked = this.states.get(stateName);
 
 			for (State.Transition transition : unbaked.transitions) {
-				state.transitions().add(new AnimationState.Transition(
+				state.transitions().add(new AnimationControllerState.Transition(
 					states.get(transition.state),
 					transition.condition
 				));

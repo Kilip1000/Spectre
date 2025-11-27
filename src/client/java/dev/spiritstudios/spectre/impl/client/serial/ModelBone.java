@@ -2,12 +2,12 @@ package dev.spiritstudios.spectre.impl.client.serial;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.spiritstudios.spectre.api.data.serialization.SpectreCodecs;
+import dev.spiritstudios.spectre.api.client.model.ModelCodecs;
+import net.minecraft.util.ExtraCodecs;
 import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Optional;
-import net.minecraft.util.ExtraCodecs;
 
 public record ModelBone(
 	String name,
@@ -21,8 +21,11 @@ public record ModelBone(
 	public static final Codec<ModelBone> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.STRING.fieldOf("name").forGetter(ModelBone::name),
 		Codec.STRING.optionalFieldOf("parent").forGetter(ModelBone::parent),
-		SpectreCodecs.VECTOR_3F_SIXTEENTH.fieldOf("pivot").forGetter(ModelBone::pivot),
-		ExtraCodecs.VECTOR3F.optionalFieldOf("rotation", new Vector3f()).forGetter(ModelBone::rotation),
+		ExtraCodecs.VECTOR3F.optionalFieldOf("pivot", new Vector3f(0F)).xmap(
+			vec -> vec.mul(-1F, 1F, 1F),
+			vec -> vec.mul(-1F, 1F, 1F)
+		).forGetter(ModelBone::pivot),
+		ModelCodecs.ROTATION_VECTOR.optionalFieldOf("rotation", new Vector3f(0F)).forGetter(ModelBone::rotation),
 		Codec.BOOL.optionalFieldOf("mirror", false).forGetter(ModelBone::mirror),
 		Codec.FLOAT.optionalFieldOf("inflate", 0F).forGetter(ModelBone::inflate),
 		Cube.CODEC.listOf().optionalFieldOf("cubes", List.of()).forGetter(ModelBone::cubes)

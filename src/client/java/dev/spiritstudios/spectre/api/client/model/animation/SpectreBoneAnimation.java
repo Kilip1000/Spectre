@@ -3,14 +3,13 @@ package dev.spiritstudios.spectre.api.client.model.animation;
 import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.spiritstudios.spectre.api.client.model.Bone;
-import dev.spiritstudios.spectre.api.client.model.BoneState;
 
 import java.util.Arrays;
 import java.util.Optional;
 
 import dev.spiritstudios.spectre.api.core.math.Query;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 
 public record SpectreBoneAnimation(
@@ -42,8 +41,8 @@ public record SpectreBoneAnimation(
 		return loopType == LoopType.TRUE ? seconds % length : seconds;
 	}
 
-	public void update(
-		BoneState state,
+	public void apply(
+		ModelPart part,
 		ActorAnimation animation,
 		Query query,
 		float runningTicks,
@@ -51,28 +50,34 @@ public record SpectreBoneAnimation(
 	) {
 		float seconds = this.getRunningSeconds(runningTicks, animation.loop(), animation.length());
 
-		positionKeyframes.evaluate(
-			query,
-			animation.loop(),
-			seconds,
-			scale,
-			state.offset()
+		part.resetPose();
+
+		part.offsetPos(
+			positionKeyframes.evaluate(
+				query,
+				animation.loop(),
+				seconds,
+				scale
+			)
 		);
 
-		rotationKeyframes.evaluate(
-			query,
-			animation.loop(),
-			seconds,
-			scale * Mth.DEG_TO_RAD,
-			state.rotation()
+
+		part.offsetRotation(
+			rotationKeyframes.evaluate(
+				query,
+				animation.loop(),
+				seconds,
+				scale * Mth.DEG_TO_RAD
+			)
 		);
 
-		scaleKeyframes.evaluate(
-			query,
-			animation.loop(),
-			seconds,
-			scale,
-			state.scale()
+		part.offsetScale(
+			scaleKeyframes.evaluate(
+				query,
+				animation.loop(),
+				seconds,
+				scale
+			)
 		);
 	}
 }

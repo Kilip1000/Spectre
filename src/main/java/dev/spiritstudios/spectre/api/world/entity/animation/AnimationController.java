@@ -29,14 +29,14 @@ public class AnimationController {
 
 	public final Entity entity;
 
-	private @Nullable AnimationState previousState = null;
-	private AnimationState state;
+	private @Nullable AnimationControllerState previousState = null;
+	private AnimationControllerState state;
 
 	private long prevStartTick;
 	private long animStartTick;
 
 
-	public AnimationController(ResourceLocation location, String name, AnimationState initialState, Entity entity) {
+	public AnimationController(ResourceLocation location, String name, AnimationControllerState initialState, Entity entity) {
 		this.location = location;
 		this.name = name;
 		this.entity = entity;
@@ -46,7 +46,7 @@ public class AnimationController {
 	}
 
 	public void tick(Query query) {
-		for (AnimationState.Transition transition : state.transitions()) {
+		for (AnimationControllerState.Transition transition : state.transitions()) {
 			if (transition.condition().evaluate(query, null)) {
 				transition(transition.state());
 				break;
@@ -54,18 +54,18 @@ public class AnimationController {
 		}
 	}
 
-	public void transition(AnimationState newState) {
+	public void transition(AnimationControllerState newState) {
 		prevStartTick = animStartTick;
 		animStartTick = entity.tickCount;
 		previousState = state;
 		state = newState;
 	}
 
-	public AnimationState getState() {
+	public AnimationControllerState getState() {
 		return state;
 	}
 
-	public @Nullable AnimationState getPreviousState() {
+	public @Nullable AnimationControllerState getPreviousState() {
 		return previousState;
 	}
 

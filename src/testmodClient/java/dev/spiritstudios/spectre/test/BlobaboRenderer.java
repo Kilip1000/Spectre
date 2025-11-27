@@ -1,22 +1,21 @@
 package dev.spiritstudios.spectre.test;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import dev.spiritstudios.spectre.api.client.model.EmptyEntityModel;
-import dev.spiritstudios.spectre.api.client.model.SpectreModelRenderer;
-import dev.spiritstudios.spectre.api.core.math.Query;
 import dev.spiritstudios.spectre.impl.Spectre;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
 
-public class BlobaboRenderer extends LivingEntityRenderer<Blobabo, BlobaboEntityRenderState, EmptyEntityModel<BlobaboEntityRenderState>> {
+public class BlobaboRenderer extends LivingEntityRenderer<Blobabo, BlobaboEntityRenderState, EntityModel<BlobaboEntityRenderState>> {
 	public BlobaboRenderer(EntityRendererProvider.Context ctx) {
-		super(ctx, new EmptyEntityModel<>(), 1f);
+		super(
+			ctx,
+			new Model(ctx.bakeLayer(new ModelLayerLocation(Spectre.id("bloomray"), "default"))),
+			1f
+		);
 	}
 
 	@Override
@@ -38,34 +37,9 @@ public class BlobaboRenderer extends LivingEntityRenderer<Blobabo, BlobaboEntity
 		state.antenna.copyFrom(entity.antenna);
 	}
 
-	@Override
-	public void submit(BlobaboEntityRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraState) {
-		poseStack.pushPose();
-
-		poseStack.scale(state.scale, state.scale, state.scale);
-		this.setupRotations(state, poseStack, state.bodyRot, state.scale);
-		this.scale(state, poseStack);
-
-		boolean bodyVisible = this.isBodyVisible(state);
-		boolean translucent = !bodyVisible && !state.isInvisibleToPlayer;
-		int overlay = getOverlayCoords(state, this.getWhiteOverlayProgress(state));
-
-		SpectreModelRenderer.render(
-			poseStack,
-			nodeCollector,
-			getRenderType(state, bodyVisible, translucent, state.appearsGlowing()),
-			state.lightCoords,
-			overlay,
-			ARGB.multiply(translucent ? 0x26FFFFFF : CommonColors.WHITE, this.getModelTint(state)),
-			state.query,
-			state.ageInTicks,
-			Spectre.id("bloomray/geometry.bloomray"),
-			Spectre.id("bloomray"),
-			state.movement, state.antenna
-		);
-
-		poseStack.popPose();
-
-		super.submit(state, poseStack, nodeCollector, cameraState);
+	public static class Model extends EntityModel<BlobaboEntityRenderState> {
+		protected Model(ModelPart root) {
+			super(root);
+		}
 	}
 }

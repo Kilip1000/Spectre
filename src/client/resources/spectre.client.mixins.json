@@ -7,8 +7,10 @@
 		"screenshake.GameRendererMixin",
 		"screenshake.OptionsMixin",
 		"world.entity.ClientLevel$EntityCallbacksMixin",
+		"world.entity.EntityModelSetAccessor",
 		"world.entity.EntityRendererMixin",
-		"world.entity.LivingEntityRendererMixin"
+		"world.entity.LivingEntityRendererMixin",
+		"world.entity.ModelManagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
@@ -18,5 +20,6 @@
 	},
 	"mixins": [
 		"NarratorMixin",
+		"animation.AnimationStateAccessor"
 	]
 }

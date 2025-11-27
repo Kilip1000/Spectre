@@ -66,14 +66,13 @@ public record SpectreTransformation(SpectreKeyframe... keyframes) {
 
 	private static final Logger LOGGER = LogManager.getLogger(SpectreTransformation.class);
 
-	public void evaluate(
+	public Vector3f evaluate(
 		Query query,
 		LoopType loop,
 		float runningSeconds,
-		float scale,
-		Vector3f destination
+		float scale
 	) {
-		if (keyframes.length == 0) return;
+		if (keyframes.length == 0) return new Vector3f();
 
 		var search = Mth.binarySearch(0, this.keyframes.length, index -> runningSeconds <= this.keyframes[index].timestamp());
 
@@ -113,8 +112,6 @@ public record SpectreTransformation(SpectreKeyframe... keyframes) {
 
 		query.anim_time = runningSeconds;
 
-		var res = endFrame.lerpMode().apply(query, delta, this.keyframes, start, end, scale);
-
-		destination.add(res);
+		return endFrame.lerpMode().apply(query, delta, this.keyframes, start, end, scale);
 	}
 }

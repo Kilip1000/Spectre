@@ -8,7 +8,6 @@ import dev.spiritstudios.mojank.meow.analysis.AnalysisResult;
 import dev.spiritstudios.mojank.meow.compile.CompilerFactory;
 import dev.spiritstudios.mojank.meow.compile.Linker;
 import dev.spiritstudios.spectre.api.core.MolangMath;
-import dev.spiritstudios.spectre.api.core.collect.WeakSet;
 import dev.spiritstudios.spectre.api.core.math.MolangExpression;
 import dev.spiritstudios.spectre.api.core.math.Query;
 import dev.spiritstudios.spectre.api.world.entity.animation.AnimationController;
@@ -32,12 +31,15 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.invoke.MethodHandles;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 public class AnimationControllerManager extends SimpleResourceReloader<Map<ResourceLocation, Map<String, AnimationControllerDesc>>> {
-	public static final WeakSet<AnimationController> CONTROLLERS = new WeakSet<>();
+	public static final Set<AnimationController> CONTROLLERS = Collections.newSetFromMap(new WeakHashMap<>());
 
 	public static final AnimationControllerManager INSTANCE = new AnimationControllerManager();
 

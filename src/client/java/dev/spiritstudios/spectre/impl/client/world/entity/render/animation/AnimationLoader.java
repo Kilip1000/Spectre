@@ -1,4 +1,4 @@
-package dev.spiritstudios.spectre.api.client.model.animation;
+package dev.spiritstudios.spectre.impl.client.world.entity.render.animation;
 
 import com.google.gson.JsonParseException;
 import com.mojang.logging.LogUtils;
@@ -7,16 +7,16 @@ import dev.spiritstudios.mojank.meow.Variables;
 import dev.spiritstudios.mojank.meow.analysis.AnalysisResult;
 import dev.spiritstudios.mojank.meow.compile.CompilerFactory;
 import dev.spiritstudios.mojank.meow.compile.Linker;
+import dev.spiritstudios.spectre.api.client.model.animation.ActorAnimation;
 import dev.spiritstudios.spectre.api.core.math.MolangExpression;
 import dev.spiritstudios.spectre.api.core.math.Query;
 import dev.spiritstudios.spectre.impl.client.serial.AnimationJson;
 import dev.spiritstudios.spectre.impl.serialization.CompilerOps;
 import dev.spiritstudios.spectre.api.core.MolangMath;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.resource.v1.reloader.SimpleResourceReloader;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.StrictJsonParser;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpectreAnimationManager extends SimpleResourceReloader<Map<ResourceLocation, Map<String, ActorAnimation>>> {
+public class AnimationLoader {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
@@ -56,11 +56,8 @@ public class SpectreAnimationManager extends SimpleResourceReloader<Map<Resource
 
 	public static final FileToIdConverter LISTER = new FileToIdConverter("spectre/animations", ".animation.json");
 
-	public final Map<ResourceLocation, Map<String, ActorAnimation>> animations = new Object2ObjectOpenHashMap<>();
-
-	@Override
-	protected Map<ResourceLocation, Map<String, ActorAnimation>> prepare(SharedState store) {
-		var resources = LISTER.listMatchingResourceStacks(store.resourceManager());
+	public static Map<ResourceLocation, Map<String, ActorAnimation>> load(ResourceManager manager) {
+		var resources = LISTER.listMatchingResourceStacks(manager);
 
 		var compiler = FACTORY.build(new AnalysisResult(
 			null,
@@ -94,11 +91,5 @@ public class SpectreAnimationManager extends SimpleResourceReloader<Map<Resource
 		}
 
 		return results;
-	}
-
-	@Override
-	protected void apply(Map<ResourceLocation, Map<String, ActorAnimation>> prepared, SharedState store) {
-		animations.clear();
-		animations.putAll(prepared);
 	}
 }

@@ -1,16 +1,5 @@
 package dev.spiritstudios.spectre.api.data.serialization;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import dev.spiritstudios.spectre.impl.serialization.CompilingCodec;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
-import net.minecraft.util.ExtraCodecs;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -22,10 +11,19 @@ import com.mojang.serialization.MapDecoder;
 import com.mojang.serialization.MapEncoder;
 import com.mojang.serialization.MapLike;
 import dev.spiritstudios.spectre.api.core.math.MolangExpression;
+import dev.spiritstudios.spectre.impl.serialization.CompilingCodec;
 import dev.spiritstudios.spectre.impl.serialization.FuzzyCodec;
 import dev.spiritstudios.spectre.impl.serialization.KeyDispatchingCodec;
-import org.joml.Vector3f;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import org.joml.Vector4d;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public final class SpectreCodecs {
 	private SpectreCodecs() {
@@ -66,11 +64,6 @@ public final class SpectreCodecs {
 				.map(vecList -> new Vector4d(vecList.getFirst(), vecList.get(1), vecList.get(2), vecList.get(3))),
 			vector -> List.of(vector.x(), vector.y(), vector.z(), vector.w())
 		);
-
-	public static final Codec<Vector3f> VECTOR_3F_SIXTEENTH = ExtraCodecs.VECTOR3F.xmap(
-		v -> v.div(16F),
-		v -> v.mul(16F)
-	);
 
 	public static final Codec<MolangExpression> MOLANG = Codec.withAlternative(
 		new CompilingCodec<>(MolangExpression.class),

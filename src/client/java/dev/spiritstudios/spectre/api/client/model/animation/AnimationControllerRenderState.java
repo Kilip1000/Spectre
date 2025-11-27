@@ -1,19 +1,19 @@
 package dev.spiritstudios.spectre.api.client.model.animation;
 
-import dev.spiritstudios.spectre.api.client.model.Bone;
-import dev.spiritstudios.spectre.api.client.model.BoneState;
 import dev.spiritstudios.spectre.api.core.math.Query;
 import dev.spiritstudios.spectre.api.world.entity.animation.AnimationController;
-import dev.spiritstudios.spectre.api.world.entity.animation.AnimationState;
+import dev.spiritstudios.spectre.api.world.entity.animation.AnimationControllerState;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.model.geom.ModelPart;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.function.Function;
 
-public class AnimationControllerRenderState {
+public class AnimationControllerRenderState implements AnimationApplicator {
 	public long prevStartTick;
-	public @Nullable AnimationState previousState;
-	public AnimationState state;
+	public @Nullable AnimationControllerState previousState;
+	public AnimationControllerState state;
 	public long transitionStartTick;
 
 	public void copyFrom(AnimationController controller) {
@@ -23,7 +23,8 @@ public class AnimationControllerRenderState {
 		this.prevStartTick = controller.getPrevStartTick();
 	}
 
-	public void apply(Bone bone, BoneState boneState, Map<String, ActorAnimation> animations, Query query, float time) {
+	@Override
+	public void apply(Function<String, @Nullable ModelPart> lookup, Map<String, ActorAnimation> animations, Query query, float time) {
 		float stateTime = (time - transitionStartTick);
 		float transitionProgress = previousState == null ? 1F :
 			Math.min(stateTime / (previousState.transitionLength() * SharedConstants.TICKS_PER_SECOND), 1F);
@@ -34,17 +35,18 @@ public class AnimationControllerRenderState {
 
 				if (animation == null) return;
 
-				var boneAnim = animation.bones().get(bone.name);
-
-				if (boneAnim == null) return;
-
-				boneAnim.update(
-					boneState,
-					animation,
-					query,
-					time - prevStartTick,
-					1F - transitionProgress
-				);
+				animation.bones().forEach((name, anim) -> {
+					var part = lookup.apply(name);
+					if (part != null) {
+						anim.apply(
+							part,
+							animation,
+							query,
+							time - prevStartTick,
+							1F - transitionProgress
+						);
+					}
+				});
 			}
 		}
 
@@ -53,17 +55,18 @@ public class AnimationControllerRenderState {
 
 			if (animation == null) return;
 
-			var boneAnim = animation.bones().get(bone.name);
-
-			if (boneAnim == null) return;
-
-			boneAnim.update(
-				boneState,
-				animation,
-				query,
-				time - transitionStartTick,
-				transitionProgress
-			);
+			animation.bones().forEach((name, anim) -> {
+				var part = lookup.apply(name);
+				if (part != null) {
+					anim.apply(
+						part,
+						animation,
+						query,
+						time - transitionStartTick,
+						transitionProgress
+					);
+				}
+			});
 		}
 	}
 }

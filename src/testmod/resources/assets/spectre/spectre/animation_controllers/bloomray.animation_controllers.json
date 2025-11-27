@@ -26,14 +26,6 @@
 				"default": {
 					"animations": ["crown_sway"],
 					"transitions": [
-						{"wiggle": "math.random(0, 1) > 0.9995"}
-					],
-					"blend_transition": 0.1
-				},
-				"wiggle": {
-					"animations": ["crown_wiggle"],
-					"transitions": [
-						{"default": "query.all_animations_finished"}
 					],
 					"blend_transition": 0.1
 				}

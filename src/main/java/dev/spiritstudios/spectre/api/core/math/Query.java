@@ -33,6 +33,7 @@ public class Query {
 	public boolean is_breathing;
 	public boolean is_fire_immune;
 	public boolean is_invisible;
+	public boolean is_moving;
 	public boolean is_in_lava;
 	public boolean is_in_water;
 	public boolean is_in_water_or_rain;
@@ -65,6 +66,7 @@ public class Query {
 		is_breathing = entity.getAirSupply() >= entity.getMaxAirSupply();
 		is_fire_immune = entity.fireImmune();
 		is_invisible = entity.isInvisible();
+		is_moving = entity.getDeltaMovement().lengthSqr() != 0F;
 		is_in_water = entity.isInWater();
 		is_in_water_or_rain = entity.isInWaterOrRain();
 		is_in_lava = entity.isInLava();
