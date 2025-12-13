@@ -3,16 +3,21 @@
 	"package": "dev.spiritstudios.spectre.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
+		"debug.CubeDefinitionMixin",
+		"debug.ModelPartMixin",
+		"debug.ModelPartMixin$CubeMixin",
+		"debug.PartDefinitionMixin",
 		"screenshake.AccessibilityOptionsScreenMixin",
 		"screenshake.GameRendererMixin",
 		"screenshake.OptionsMixin",
 		"world.entity.ClientLevel$EntityCallbacksMixin",
 		"world.entity.EntityHitboxDebugRendererMixin",
 		"world.entity.EntityModelSetAccessor",
-		"world.entity.ModelPartMixin",
+		"world.entity.EntityRenderDispatcherMixin",
+		"world.entity.EntityRendererProvider$ContextMixin",
+		"world.entity.MinecraftMixin",
 		"world.entity.ModelManagerMixin",
-		"debug.ModelPartMixin",
-		"debug.PartDefinitionMixin"
+		"world.entity.ModelPartMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -9,7 +9,7 @@ plugins {
 	alias(libs.plugins.fabric.loom)
 }
 
-val modVersion = "0.0.16"
+val modVersion = "0.0.20"
 val modId = "spectre"
 val modName = "Spectre"
 
@@ -20,7 +20,7 @@ version = "$modVersion+${libs.versions.minecraft.get()}"
 
 loom {
 	splitEnvironmentSourceSets()
-	accessWidenerPath = file("src/main/resources/spectre.accesswidener")
+	accessWidenerPath = file("src/main/resources/spectre.classtweaker")
 }
 
 sourceSets {
@@ -92,6 +92,7 @@ loom {
 
 repositories {
 	mavenCentral()
+	mavenLocal()
 
 	maven {
 		name = "Spirit Studios Releases"

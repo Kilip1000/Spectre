@@ -4,13 +4,11 @@ import dev.spiritstudios.spectre.api.core.math.Query;
 import dev.spiritstudios.spectre.api.world.entity.animation.AnimationController;
 import dev.spiritstudios.spectre.api.world.entity.animation.AnimationControllerState;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.model.geom.ModelPart;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.function.Function;
 
-public class AnimationControllerRenderState implements AnimationApplicator {
+public class AnimationControllerRenderState {
 	public long prevStartTick;
 	public @Nullable AnimationControllerState previousState;
 	public AnimationControllerState state;
@@ -23,8 +21,7 @@ public class AnimationControllerRenderState implements AnimationApplicator {
 		this.prevStartTick = controller.getPrevStartTick();
 	}
 
-	@Override
-	public void apply(Function<String, @Nullable ModelPart> lookup, Map<String, ActorAnimation> animations, Query query, float time) {
+	public void apply(Map<String, SpectreKeyframeAnimation> animations, Query query, float time) {
 		float stateTime = (time - transitionStartTick);
 		float transitionProgress = previousState == null ? 1F :
 			Math.min(stateTime / (previousState.transitionLength() * SharedConstants.TICKS_PER_SECOND), 1F);
@@ -35,18 +32,11 @@ public class AnimationControllerRenderState implements AnimationApplicator {
 
 				if (animation == null) return;
 
-				animation.bones().forEach((name, anim) -> {
-					var part = lookup.apply(name);
-					if (part != null) {
-						anim.apply(
-							part,
-							animation,
-							query,
-							time - prevStartTick,
-							1F - transitionProgress
-						);
-					}
-				});
+				animation.apply(
+					query,
+					time - prevStartTick,
+					1F - transitionProgress
+				);
 			}
 		}
 
@@ -55,18 +45,11 @@ public class AnimationControllerRenderState implements AnimationApplicator {
 
 			if (animation == null) return;
 
-			animation.bones().forEach((name, anim) -> {
-				var part = lookup.apply(name);
-				if (part != null) {
-					anim.apply(
-						part,
-						animation,
-						query,
-						time - transitionStartTick,
-						transitionProgress
-					);
-				}
-			});
+			animation.apply(
+				query,
+				time - transitionStartTick,
+				transitionProgress
+			);
 		}
 	}
 }

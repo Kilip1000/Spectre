@@ -9,6 +9,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -42,6 +43,13 @@ public class Blobabo extends PathfinderMob implements PartHolder<Blobabo> {
 			"controller.animation.bloomray.antenna",
 			this
 		);
+	}
+
+	@Override
+	protected void registerGoals() {
+		super.registerGoals();
+
+		this.goalSelector.addGoal(0, new WaterAvoidingRandomStrollGoal(this, 1.0));
 	}
 
 	@Override

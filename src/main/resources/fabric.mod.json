@@ -1,36 +1,39 @@
 {
-  "schemaVersion": 1,
-  "id": "spectre",
-  "version": "${version}",
-  "name": "Spectre",
-  "description": "",
-  "authors": [],
-  "contact": {
-    "repo": "https://github.com/SpiritGameStudios/Spectre",
-    "issues": "https://github.com/SpiritGameStudios/Spectre/issues"
-  },
-  "license": "MPL-2.0",
-  "icon": "assets/spectre/icon.png",
-  "environment": "*",
-  "entrypoints": {
-	  "main": ["dev.spiritstudios.spectre.impl.Spectre"],
-	  "client": [
-        "dev.spiritstudios.spectre.impl.client.SpectreClient"
-      ]
-  },
-  "mixins": [
-    "spectre.mixins.json",
-    {
-      "config": "spectre.client.mixins.json",
-      "environment": "client"
-    }
-  ],
-  "depends": {
-    "fabricloader": ">=${loader_version}",
-    "minecraft": "~1.21.10",
-    "fabric-api": "*",
-    "java": ">=21"
-  },
+	"schemaVersion": 1,
+	"id": "spectre",
+	"version": "${version}",
+	"name": "Spectre",
+	"description": "",
+	"authors": [],
+	"contact": {
+		"repo": "https://github.com/SpiritGameStudios/Spectre",
+		"issues": "https://github.com/SpiritGameStudios/Spectre/issues"
+	},
+	"license": "MPL-2.0",
+	"icon": "assets/spectre/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.spiritstudios.spectre.impl.Spectre"
+		],
+		"client": [
+			"dev.spiritstudios.spectre.impl.client.SpectreClient"
+		]
+	},
+	"accessWidener": "spectre.classtweaker",
+	"mixins": [
+		"spectre.mixins.json",
+		{
+			"config": "spectre.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=${loader_version}",
+		"minecraft": "~1.21.10",
+		"fabric-api": "*",
+		"java": ">=21"
+	},
 	"custom": {
 		"modmenu": {
 			"links": {
@@ -39,20 +42,6 @@
 			},
 			"badges": [
 				"library"
-			]
-		},
-		"loom:injected_interfaces": {
-			"net/minecraft/class_6880": [
-				"dev/spiritstudios/spectre/api/core/registry/metatag/MetatagHolder<TT;>"
-			],
-			"net/minecraft/class_1299": [
-				"dev/spiritstudios/spectre/api/core/registry/metatag/MetatagHolder<Lnet/minecraft/class_1299<*>;>"
-			],
-			"net/minecraft/class_2248": [
-				"dev/spiritstudios/spectre/api/core/registry/metatag/MetatagHolder<Lnet/minecraft/class_2248;>"
-			],
-			"net/minecraft/class_1792": [
-				"dev/spiritstudios/spectre/api/core/registry/metatag/MetatagHolder<Lnet/minecraft/class_1792;>"
 			]
 		}
 	}

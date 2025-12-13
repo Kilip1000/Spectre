@@ -4,16 +4,18 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.spiritstudios.spectre.api.client.model.ModelCodecs;
+import dev.spiritstudios.spectre.impl.client.pond.SpectreCubeDef;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ExtraCodecs;
-import org.apache.commons.lang3.NotImplementedException;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public record Cube(
 	Vector3fc origin,
@@ -42,23 +44,28 @@ public record Cube(
 
 	public void bake(CubeListBuilder builder, Vector3fc boneOrigin) {
 		var pos = new Vector3f(
-			-(origin.x() + size.x()) - boneOrigin.x(),
-			origin.y() - boneOrigin.y(),
+			origin.x() - boneOrigin.x(),
+			-(origin.y() + size.y()) - boneOrigin.y(),
 			origin.z() - boneOrigin.z()
 		);
 
+		// ihatejavaihatejavaihatejava
+		AtomicReference<@Nullable Map<Direction, Face>> faceUV = new AtomicReference<>(null);
+
 		uv
 			.ifLeft(offsets -> builder.texOffs((int) offsets.x(), (int) offsets.y()))
-			.ifRight(faces -> {
-				throw new NotImplementedException();
-			});
+			.ifRight(faceUV::set);
 
 		builder.mirror(mirror).addBox(
 			pos.x, pos.y, pos.z,
 			size.x(), size.y(), size.z(),
 			new CubeDeformation(inflate() - 1F),
 			1.0F, 1.0F
-			);
+		);
+
+		if (faceUV.get() != null) {
+			((SpectreCubeDef) (Object) builder.getCubes().getLast()).spectre$setFaceUv(faceUV.get());
+		}
 	}
 
 //	public SpectreCuboid bake(ModelBone bone, float textureWidth, float textureHeight) {

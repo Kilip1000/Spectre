@@ -1,8 +1,7 @@
 package dev.spiritstudios.spectre.api.core.math;
 
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.SharedConstants;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentUser;
@@ -11,8 +10,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
-
-import java.util.function.Predicate;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 
 public class Query {
 	public float anim_time;
@@ -48,9 +47,18 @@ public class Query {
 
 	public double vertical_speed;
 	public double ground_speed;
+	public double modified_move_speed;
+
+	public int moon_phase; // TODO: Enum support in mojank
+	public float moon_brightness;
 
 	public void set(Entity entity, float partialTick) {
-		day = entity.level().getGameTime() / SharedConstants.TICKS_PER_GAME_DAY;
+		Level level = entity.level();
+
+		day = level.getGameTime() / SharedConstants.TICKS_PER_GAME_DAY;
+
+		moon_phase = level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, entity.position()).index();
+		moon_brightness = DimensionType.MOON_BRIGHTNESS_PER_PHASE[moon_phase];
 
 		body_x_rotation = entity.getXRot(partialTick);
 		body_y_rotation = entity.getYRot(partialTick);
@@ -81,5 +89,6 @@ public class Query {
 
 		vertical_speed = entity.getDeltaMovement().y;
 		ground_speed = entity.getDeltaMovement().horizontalDistance();
+		modified_move_speed = entity instanceof LivingEntity living ? living.getSpeed() : 0;
 	}
 }

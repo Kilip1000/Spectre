@@ -8,5 +8,5 @@ import java.util.Map;
 import java.util.function.Function;
 
 public interface AnimationApplicator {
-	void apply(Function<String, @Nullable ModelPart> lookup, Map<String, ActorAnimation> animations, Query query, float time);
+	void apply(Function<String, @Nullable ModelPart> lookup, Map<String, SpectreAnimationDefinition> animations, Query query, float time);
 }

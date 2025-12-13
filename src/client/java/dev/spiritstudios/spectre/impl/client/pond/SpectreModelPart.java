@@ -1,4 +1,4 @@
-package dev.spiritstudios.spectre.impl.client;
+package dev.spiritstudios.spectre.impl.client.pond;
 
 public interface SpectreModelPart {
 	String spectre$getName();

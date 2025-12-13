@@ -7,14 +7,20 @@ import dev.spiritstudios.mojank.meow.Variables;
 import dev.spiritstudios.mojank.meow.analysis.AnalysisResult;
 import dev.spiritstudios.mojank.meow.compile.CompilerFactory;
 import dev.spiritstudios.mojank.meow.link.Linker;
-import dev.spiritstudios.spectre.api.client.model.animation.ActorAnimation;
+import dev.spiritstudios.spectre.api.client.model.animation.AnimationLocation;
+import dev.spiritstudios.spectre.api.client.model.animation.EntityAnimationSet;
+import dev.spiritstudios.spectre.api.client.model.animation.SpectreAnimationDefinition;
 import dev.spiritstudios.spectre.api.core.MolangMath;
 import dev.spiritstudios.spectre.api.core.math.MolangExpression;
 import dev.spiritstudios.spectre.api.core.math.Query;
+import dev.spiritstudios.spectre.impl.Spectre;
 import dev.spiritstudios.spectre.impl.client.serial.AnimationJson;
 import dev.spiritstudios.spectre.impl.serialization.CompilerOps;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.StrictJsonParser;
@@ -33,8 +39,13 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
-public class AnimationLoader {
+public class AnimationManager implements PreparableReloadListener {
+	public static final Identifier ID = Spectre.id("animations");
+
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
@@ -56,7 +67,7 @@ public class AnimationLoader {
 
 	public static final FileToIdConverter LISTER = new FileToIdConverter("spectre/animations", ".animation.json");
 
-	public static Map<Identifier, Map<String, ActorAnimation>> load(ResourceManager manager) {
+	public static Map<AnimationLocation, SpectreAnimationDefinition> load(ResourceManager manager) {
 		var resources = LISTER.listMatchingResourceStacks(manager);
 
 		var compiler = FACTORY.build(new AnalysisResult(
@@ -66,19 +77,21 @@ public class AnimationLoader {
 
 		var ops = new CompilerOps<>(JsonOps.INSTANCE, compiler, MolangExpression.class);
 
-		Map<Identifier, Map<String, ActorAnimation>> results = new HashMap<>();
+		Map<AnimationLocation, SpectreAnimationDefinition> results = new HashMap<>();
 
 		for (Map.Entry<Identifier, List<Resource>> entry : resources.entrySet()) {
 			var id = LISTER.fileToId(entry.getKey());
-			var value = results.computeIfAbsent(id, k -> new HashMap<>());
 
 			for (Resource resource : entry.getValue()) {
 				try (Reader reader = resource.openAsReader()) {
 					AnimationJson.CODEC.parse(ops, StrictJsonParser.parse(reader))
 						.ifSuccess(animations -> {
 							animations.animations().forEach((name, animation) -> {
-								value.put(
-									name.replaceFirst("animation." + id.getPath() + ".", ""),
+								results.put(
+									new AnimationLocation(
+										id,
+										name.replaceFirst("animation." + id.getPath() + ".", "")
+									),
 									animation
 								);
 							});
@@ -91,5 +104,39 @@ public class AnimationLoader {
 		}
 
 		return results;
+	}
+
+	private EntityAnimationSet entityAnimationSet = EntityAnimationSet.EMPTY;
+
+	@Override
+	public CompletableFuture<Void> reload(SharedState state, Executor prepareExecutor, PreparationBarrier barrier, Executor applyExecutor) {
+		CompletableFuture<EntityAnimationSet> animationSetFuture = CompletableFuture.supplyAsync(
+			() -> EntityAnimationSet.load(state.resourceManager()),
+			prepareExecutor
+		);
+
+		return animationSetFuture
+			.thenApplyAsync(
+				ReloadState::new,
+				prepareExecutor
+			)
+			.thenCompose(barrier::wait)
+			.thenAcceptAsync(
+				this::apply,
+				applyExecutor
+			);
+	}
+
+	private void apply(ReloadState state) {
+		this.entityAnimationSet = state.entityAnimationSet;
+	}
+	public Supplier<EntityAnimationSet> entityAnimations() {
+		return () -> this.entityAnimationSet;
+	}
+
+	@Environment(EnvType.CLIENT)
+	record ReloadState(
+		EntityAnimationSet entityAnimationSet
+	) {
 	}
 }

@@ -25,9 +25,6 @@
 				"tail": {
 					"rotation": ["-math.sin(query.anim_time * 360) * 10", 0, 0]
 				},
-				"crownthing": {
-					"rotation": [0, 0, 0]
-				},
 				"left": {
 					"rotation": {
 						"0.0": {
@@ -72,9 +69,6 @@
 				},
 				"tail": {
 					"rotation": ["-math.sin(query.anim_time * 360) * 2", 0, 0]
-				},
-				"crownthing": {
-					"rotation": [0, 0, 0]
 				},
 				"left": {
 					"rotation": [0, 0, "-math.sin(query.anim_time * 180) * 3"]

@@ -8,16 +8,16 @@ import java.util.Optional;
 
 public record SpectreKeyframe(
 	float timestamp,
-	Vector3fExpression from,
-	Vector3fExpression to,
-	LerpMode lerpMode
+	Vector3fExpression preTarget,
+	Vector3fExpression postTarget,
+	LerpMode interpolation
 ) {
-	public static Codec<SpectreKeyframe> codec(float timestamp, boolean rot) {
+	public static Codec<SpectreKeyframe> codec(float timestamp) {
 		return Codec.withAlternative(
 			RecordCodecBuilder.create(instance -> instance.group(
-				(rot ? Vector3fExpression.CODEC_SIXTEENTH : Vector3fExpression.CODEC).optionalFieldOf("pre").forGetter(k -> Optional.of(k.from)),
-				(rot ? Vector3fExpression.CODEC_SIXTEENTH : Vector3fExpression.CODEC).fieldOf("post").forGetter(SpectreKeyframe::to),
-				LerpMode.CODEC.optionalFieldOf("lerp_mode", LerpMode.LINEAR).forGetter(SpectreKeyframe::lerpMode)
+				Vector3fExpression.CODEC.optionalFieldOf("pre").forGetter(k -> Optional.of(k.preTarget)),
+				Vector3fExpression.CODEC.fieldOf("post").forGetter(SpectreKeyframe::postTarget),
+				LerpMode.CODEC.optionalFieldOf("lerp_mode", LerpMode.LINEAR).forGetter(SpectreKeyframe::interpolation)
 			).apply(instance, (from, to, lerp) -> new SpectreKeyframe(
 				timestamp,
 				from.orElse(to),
@@ -27,8 +27,8 @@ public record SpectreKeyframe(
 			SpectreCodecs.MOLANG.listOf(3, 3).xmap(
 				list -> new SpectreKeyframe(
 					timestamp,
-					rot ? Vector3fExpression.ofSixteenth(list) : Vector3fExpression.of(list),
-					rot ? Vector3fExpression.ofSixteenth(list) : Vector3fExpression.of(list),
+					Vector3fExpression.of(list),
+					Vector3fExpression.of(list),
 					LerpMode.LINEAR
 				),
 				keyframe -> {

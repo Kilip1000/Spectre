@@ -41,6 +41,9 @@ public class EntityDisplayRenderer extends DisplayRenderer<EntityDisplay, Entity
 			modelLoc, layer
 		));
 
+		poseStack.pushPose();
+		poseStack.scale(-1.0F, -1.0F, 1.0F);
+		poseStack.translate(0.0F, -1.501F, 0.0F);
 		submitNodeCollector.submitModelPart(
 			part,
 			poseStack,
@@ -49,5 +52,7 @@ public class EntityDisplayRenderer extends DisplayRenderer<EntityDisplay, Entity
 			OverlayTexture.NO_OVERLAY,
 			null
 		);
+
+		poseStack.popPose();
 	}
 }

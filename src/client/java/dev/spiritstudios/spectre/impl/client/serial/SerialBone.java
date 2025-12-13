@@ -23,8 +23,8 @@ public record SerialBone(
 		Codec.STRING.fieldOf("name").forGetter(SerialBone::name),
 		Codec.STRING.optionalFieldOf("parent").forGetter(SerialBone::parent),
 		ExtraCodecs.VECTOR3F.optionalFieldOf("pivot", new Vector3f(0F)).<Vector3fc>xmap(
-			vec -> vec.mul(-1F, 1F, 1F, new Vector3f()),
-			vec -> vec.mul(-1F, 1F, 1F, new Vector3f())
+			vec -> vec.mul(1F, -1F, 1F, new Vector3f()),
+			vec -> vec.mul(1F, -1F, 1F, new Vector3f())
 		).forGetter(SerialBone::pivot),
 		ModelCodecs.ROTATION_VECTOR.optionalFieldOf("rotation", new Vector3f(0F)).forGetter(SerialBone::rotation),
 		Codec.BOOL.optionalFieldOf("mirror", false).forGetter(SerialBone::mirror),

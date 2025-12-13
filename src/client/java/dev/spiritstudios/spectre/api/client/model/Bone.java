@@ -32,6 +32,9 @@ public class Bone {
 		var cubes = new CubeListBuilder();
 		List<Cube> deferred = new ArrayList<>();
 
+		Vector3f pivot = new Vector3f(this.pivot);
+		if (parentBone == null) pivot.y += 24;
+
 		for (Cube cuboid : cuboids) {
 			if (!cuboid.rotation().equals(0F, 0F, 0F) || !cuboid.pivot().equals(0F, 0F, 0F)) {
 				deferred.add(cuboid);

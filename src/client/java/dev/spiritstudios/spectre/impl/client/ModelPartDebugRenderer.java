@@ -1,6 +1,7 @@
 package dev.spiritstudios.spectre.impl.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.spiritstudios.spectre.impl.client.pond.SpectreModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
@@ -14,7 +15,7 @@ import org.joml.Vector3f;
 public class ModelPartDebugRenderer {
 	public static void debugModelPart(ModelPart part, PoseStack.Pose pose) {
 		var dir = pose.transformNormal(0, 0, 0, new Vector3f());
-		var partPos = new Vec3(pose.pose().transformPosition(new Vector3f()));
+		var partPos = new Vec3(pose.pose().transformPosition(0, 0, 0, new Vector3f()));
 
 		var name = ((SpectreModelPart) (Object) part).spectre$getName();
 		if (name.equals("Unset")) return;

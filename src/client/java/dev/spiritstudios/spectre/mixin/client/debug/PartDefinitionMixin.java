@@ -2,7 +2,7 @@ package dev.spiritstudios.spectre.mixin.client.debug;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.spiritstudios.spectre.impl.client.SpectreModelPart;
+import dev.spiritstudios.spectre.impl.client.pond.SpectreModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import org.spongepowered.asm.mixin.Mixin;

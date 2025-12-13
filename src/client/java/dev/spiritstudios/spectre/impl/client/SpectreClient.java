@@ -1,9 +1,8 @@
 package dev.spiritstudios.spectre.impl.client;
 
 import dev.spiritstudios.spectre.api.client.SpectreScreenshake;
-import dev.spiritstudios.spectre.impl.client.world.entity.render.SpectreModelLoader;
-import dev.spiritstudios.spectre.impl.client.world.entity.render.animation.AnimationLoader;
 import dev.spiritstudios.spectre.api.network.ScreenshakeS2CPayload;
+import dev.spiritstudios.spectre.impl.client.world.entity.render.animation.AnimationManager;
 import dev.spiritstudios.spectre.impl.registry.MetatagContents;
 import dev.spiritstudios.spectre.impl.registry.MetatagSyncS2CPayload;
 import dev.spiritstudios.spectre.impl.world.item.CreativeModeTabReloader;
@@ -11,14 +10,22 @@ import dev.spiritstudios.spectre.impl.world.item.CreativeModeTabsS2CPayload;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 import net.minecraft.SharedConstants;
+import net.minecraft.server.packs.PackType;
 
 public final class SpectreClient implements ClientModInitializer {
-	public static final SpectreModelLoader MODEL_MANAGER = new SpectreModelLoader();
-	public static final AnimationLoader ANIMATION_MANAGER = new AnimationLoader();
+	public static final AnimationManager ANIMATION_MANAGER = new AnimationManager();
 
     @Override
     public void onInitializeClient() {
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(AnimationManager.ID, ANIMATION_MANAGER);
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).addReloaderOrdering(
+			AnimationManager.ID,
+			ResourceReloaderKeys.Client.MODELS
+		);
+
 		ClientPlayNetworking.registerGlobalReceiver(
 			ScreenshakeS2CPayload.TYPE,
 			(payload, context) -> {
