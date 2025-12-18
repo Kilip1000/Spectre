@@ -1,6 +1,6 @@
 package dev.spiritstudios.spectre.impl.registry;
 
-import dev.spiritstudios.spectre.api.core.exception.ImpossibleException;
+import dev.spiritstudios.spectre.api.core.exception.ImpossibleStateException;
 import dev.spiritstudios.spectre.api.core.registry.metatag.MetatagKey;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ public record MetatagContents<K, V>(MetatagKey<K, V> metatag, Map<Holder<K>, V> 
 				// I'm fairly sure this is impossible, but in case it isn't:
 				// You could probably fix this by looking up the direct entry's key
 				// in the global registries
-				throw new ImpossibleException();
+				throw new ImpossibleStateException();
 			}
 
 			var holder = MutableMetatagHolder.cast(reference);

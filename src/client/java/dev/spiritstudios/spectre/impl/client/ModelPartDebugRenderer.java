@@ -13,7 +13,11 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class ModelPartDebugRenderer {
+	public static final boolean ENABLED = false;
+
 	public static void debugModelPart(ModelPart part, PoseStack.Pose pose) {
+		if (!ENABLED) return;
+
 		var dir = pose.transformNormal(0, 0, 0, new Vector3f());
 		var partPos = new Vec3(pose.pose().transformPosition(0, 0, 0, new Vector3f()));
 
@@ -36,6 +40,8 @@ public class ModelPartDebugRenderer {
 	}
 
 	public static void debugCube(ModelPart part, PoseStack.Pose pose, ModelPart.Cube cube) {
+		if (!ENABLED) return;
+
 		Matrix4f mat = pose.pose();
 		var min = new Vector3f(cube.minX, cube.minY, cube.minZ).div(16F);
 		var max = new Vector3f(cube.maxX, cube.maxY, cube.maxZ).div(16F);

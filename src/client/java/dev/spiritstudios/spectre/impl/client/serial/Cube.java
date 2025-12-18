@@ -29,10 +29,13 @@ public record Cube(
 	public static final Codec<Cube> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		ExtraCodecs.VECTOR3F.optionalFieldOf("origin", new Vector3f(0F)).forGetter(Cube::origin),
 		ExtraCodecs.VECTOR3F.optionalFieldOf("size", new Vector3f(1F)).forGetter(Cube::size),
-		ModelCodecs.ROTATION_VECTOR.optionalFieldOf("rotation", new Vector3f(0F)).forGetter(Cube::rotation),
+		ModelCodecs.ROTATION_VECTOR.<Vector3fc>xmap(
+			vec -> vec.mul(-1F, -1F, 1F, new Vector3f()),
+			vec -> vec.mul(-1F, -1F, 1F, new Vector3f())
+		).optionalFieldOf("rotation", new Vector3f(0F)).forGetter(Cube::rotation),
 		ExtraCodecs.VECTOR3F.<Vector3fc>xmap(
-			vec -> vec.mul(-1F, 1F, 1F, new Vector3f()),
-			vec -> vec.mul(-1F, 1F, 1F, new Vector3f())
+			vec -> vec.mul(1F, -1F, 1F, new Vector3f()),
+			vec -> vec.mul(1F, -1F, 1F, new Vector3f())
 		).optionalFieldOf("pivot", new Vector3f(0F)).forGetter(Cube::pivot),
 		Codec.FLOAT.optionalFieldOf("inflate", 1F).forGetter(Cube::inflate),
 		Codec.BOOL.optionalFieldOf("mirror", false).forGetter(Cube::mirror),
@@ -44,10 +47,10 @@ public record Cube(
 
 	public void bake(CubeListBuilder builder, Vector3fc boneOrigin) {
 		var pos = new Vector3f(
-			origin.x() - boneOrigin.x(),
-			-(origin.y() + size.y()) - boneOrigin.y(),
-			origin.z() - boneOrigin.z()
-		);
+			origin.x(),
+			-(origin.y() + size.y()),
+			origin.z()
+		).sub(boneOrigin);
 
 		// ihatejavaihatejavaihatejava
 		AtomicReference<@Nullable Map<Direction, Face>> faceUV = new AtomicReference<>(null);

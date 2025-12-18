@@ -2,7 +2,7 @@ package dev.spiritstudios.spectre.api.client.model.animation;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import dev.spiritstudios.spectre.api.core.exception.ImpossibleException;
+import dev.spiritstudios.spectre.api.core.exception.ImpossibleStateException;
 import net.minecraft.client.animation.AnimationChannel;
 
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public record SpectreAnimationChannel(AnimationChannel.Target target, SpectreKey
 					)
 				),
 				channel -> {
-					throw new ImpossibleException();
+					throw new ImpossibleStateException();
 				}
 			)
 		);

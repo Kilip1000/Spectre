@@ -36,7 +36,7 @@ public class Bone {
 		if (parentBone == null) pivot.y += 24;
 
 		for (Cube cuboid : cuboids) {
-			if (!cuboid.rotation().equals(0F, 0F, 0F) || !cuboid.pivot().equals(0F, 0F, 0F)) {
+			if ((!cuboid.rotation().equals(0F, 0F, 0F) || !cuboid.pivot().equals(0F, 0F, 0F))) {
 				deferred.add(cuboid);
 			} else {
 				cuboid.bake(cubes, pivot);
@@ -58,13 +58,13 @@ public class Bone {
 		for (int i = 0; i < deferred.size(); i++) {
 			Cube cuboid = deferred.get(i);
 			var builder = new CubeListBuilder();
-			cuboid.bake(builder, origin);
+			cuboid.bake(builder, pivot);
 
 			part.addOrReplaceChild(
 				"spectre:" + name + "_r" + i,
 				builder,
 				PartPose.offsetAndRotation(
-					cuboid.pivot().x(), cuboid.pivot().y(), cuboid.pivot().z(),
+					cuboid.pivot().x() - origin.x, cuboid.pivot().y() - origin.y, cuboid.pivot().z() - origin.z,
 					cuboid.rotation().x(), cuboid.rotation().y(), cuboid.rotation().z()
 				)
 			);
