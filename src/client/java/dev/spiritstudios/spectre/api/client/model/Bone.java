@@ -28,6 +28,11 @@ public class Bone {
 		this.rotation = rotation;
 	}
 
+	@Override
+	public String toString() {
+		return name+'#'+rotation.x()+' '+rotation.y()+' '+rotation.z()+'#'+pivot.x()+' '+pivot.y()+' '+pivot.z();
+	}
+
 	public void bake(PartDefinition parent, @Nullable Bone parentBone) {
 		var cubes = new CubeListBuilder();
 		List<Cube> deferred = new ArrayList<>();
@@ -35,7 +40,7 @@ public class Bone {
 		Vector3f pivot = new Vector3f(this.pivot);
 
 		boolean hasParent = parentBone != null;
-		if (!hasParent) pivot.y += 24;
+		//if (!hasParent) pivot.y += 24;
 
 		var origin = new Vector3f(pivot);
 		if (hasParent) origin.sub(parentBone.pivot);
@@ -46,7 +51,7 @@ public class Bone {
 			} else {
 				cuboid.bake(cubes, pivot.sub(
 					0,
-					hasParent ? 0 : 24,
+					0,
 					0,
 					new Vector3f()
 				));
@@ -68,14 +73,13 @@ public class Bone {
 			var builder = new CubeListBuilder();
 			cuboid.bake(builder, pivot.sub(
 				0,
-				hasParent ? 0 : 24,
+				0,
 				0,
 				new Vector3f()
 			));
 
 			Vector3f cpivot = new Vector3f(cuboid.pivot());
 
-			if (!hasParent) cpivot.y += 24;
 
 			var corigin = new Vector3f(cpivot);
 			corigin.sub(origin);
