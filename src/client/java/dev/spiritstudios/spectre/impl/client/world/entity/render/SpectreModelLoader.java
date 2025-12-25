@@ -45,14 +45,12 @@ public class SpectreModelLoader {
 								Map<String, Bone> bones = new Object2ObjectOpenHashMap<>();
 								List<Bone> rootBones = new ArrayList<>();
 								for (SerialBone bone : geometry.bones()) {
-									var t = new Bone(
+									bones.put(bone.name(), new Bone(
 										bone.name(),
 										bone.cubes(),
 										bone.pivot(),
 										bone.rotation()
-									);
-									bones.put(bone.name(), t);
-									LOGGER.info("Bone: "+ t);
+									));
 								}
 
 								for (SerialBone bone : geometry.bones()) {
@@ -61,7 +59,7 @@ public class SpectreModelLoader {
 											parentName -> {
 												var parent = bones.get(parentName);
 												var child = bones.get(bone.name());
-												LOGGER.info("Child bone: "+child);
+
 												parent.children.add(child);
 											},
 											() -> rootBones.add(bones.get(bone.name()))
@@ -72,7 +70,6 @@ public class SpectreModelLoader {
 								var rootPart = mesh.getRoot();
 
 								for (Bone bone : rootBones) {
-									LOGGER.info("Root bone: "+bone.toString());
 									bone.bake(rootPart, null);
 								}
 
