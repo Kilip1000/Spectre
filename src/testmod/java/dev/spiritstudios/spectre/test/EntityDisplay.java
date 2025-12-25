@@ -12,10 +12,11 @@ import org.jspecify.annotations.Nullable;
 
 public class EntityDisplay extends Display {
 	public static final String TAG_MODEL = "model";
-	public static final String TAG_TEXTURE = "texture";
+	public static final String TAG_TEXTURE = "anim";
 
 	private static final EntityDataAccessor<Identifier> MODEL = SynchedEntityData.defineId(EntityDisplay.class, SpectreTestmod.IDENTIFIER);
 	private static final EntityDataAccessor<Identifier> TEXTURE = SynchedEntityData.defineId(EntityDisplay.class, SpectreTestmod.IDENTIFIER);
+	private static final EntityDataAccessor<Identifier> ANIM = SynchedEntityData.defineId(EntityDisplay.class, SpectreTestmod.IDENTIFIER);
 
 
 	private @Nullable RenderState state;
@@ -29,6 +30,8 @@ public class EntityDisplay extends Display {
 		super.defineSynchedData(builder);
 		builder.define(MODEL, Identifier.withDefaultNamespace("zombie/main"));
 		builder.define(TEXTURE, Identifier.withDefaultNamespace("textures/entity/zombie/zombie.png"));
+		builder.define(ANIM, Identifier.withDefaultNamespace("none"));
+
 	}
 
 	@Override
@@ -49,8 +52,15 @@ public class EntityDisplay extends Display {
 		return this.entityData.get(TEXTURE);
 	}
 
+	public final Identifier getAnim() {
+		return this.entityData.get(ANIM);
+	}
+
 	public final void setTexture(Identifier texture) {
 		this.entityData.set(TEXTURE, texture);
+	}
+	public final void setAnim(Identifier anim) {
+		this.entityData.set(ANIM, anim);
 	}
 
 	@Override
@@ -58,6 +68,8 @@ public class EntityDisplay extends Display {
 		super.readAdditionalSaveData(input);
 		this.setModel(input.read("model", Identifier.CODEC).orElse(Identifier.withDefaultNamespace("zombie/main")));
 		this.setTexture(input.read("texture", Identifier.CODEC).orElse(Identifier.withDefaultNamespace("textures/entity/zombie/zombie.png")));
+		this.setAnim(input.read("anim", Identifier.CODEC).orElse(Identifier.withDefaultNamespace("none")));
+
 	}
 
 	@Override
@@ -65,6 +77,7 @@ public class EntityDisplay extends Display {
 		super.addAdditionalSaveData(output);
 		output.store("model", Identifier.CODEC, getModel());
 		output.store("texture", Identifier.CODEC, getTexture());
+		output.store("anim", Identifier.CODEC, getAnim());
 	}
 
 	@Nullable
@@ -74,9 +87,9 @@ public class EntityDisplay extends Display {
 
 	@Override
 	protected void updateRenderSubState(boolean interpolate, float partialTick) {
-		this.state = new RenderState(this.getModel(), this.getTexture());
+		this.state = new RenderState(this.getModel(), this.getTexture(), getAnim());
 	}
 
-	public record RenderState(Identifier model, Identifier texture) {
+	public record RenderState(Identifier model, Identifier texture, Identifier anim) {
 	}
 }

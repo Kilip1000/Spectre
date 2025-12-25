@@ -65,7 +65,7 @@ public class AnimationManager implements PreparableReloadListener {
 			.build()
 	);
 
-	public static final FileToIdConverter LISTER = new FileToIdConverter("spectre/animations", ".animation.json");
+	public static final FileToIdConverter LISTER = new FileToIdConverter("spectre/animations/entity", ".animation.json");
 
 	public static Map<AnimationLocation, SpectreAnimationDefinition> load(ResourceManager manager) {
 		var resources = LISTER.listMatchingResourceStacks(manager);
@@ -130,6 +130,7 @@ public class AnimationManager implements PreparableReloadListener {
 	private void apply(ReloadState state) {
 		this.entityAnimationSet = state.entityAnimationSet;
 	}
+
 	public Supplier<EntityAnimationSet> entityAnimations() {
 		return () -> this.entityAnimationSet;
 	}
