@@ -4,7 +4,6 @@ import dev.spiritstudios.spectre.impl.client.serial.Cube;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -36,11 +35,7 @@ public class Bone {
 		Vector3f pivot = new Vector3f(this.pivot);
 
 		boolean hasParent = parentBone != null;
-		//if (!hasParent) pivot.y -= 24 * Mth.sign(pivot.y);
-		/*
-		why does this offset exist, why only for root bones and why is it always a positive value, why no associated sign?
-		Also, why is it 24? Holy hardcode?
-		*/
+		if (!hasParent) pivot.y += 24;
 
 		var origin = new Vector3f(pivot);
 		if (hasParent) origin.sub(parentBone.pivot);
@@ -51,7 +46,7 @@ public class Bone {
 			} else {
 				cuboid.bake(cubes, pivot.sub(
 					0,
-					hasParent ? 0 : 24,
+					hasParent ? 24 : 0, //wiggle in opposite direction?
 					0,
 					new Vector3f()
 				));
