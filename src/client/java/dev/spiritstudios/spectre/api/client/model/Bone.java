@@ -41,12 +41,7 @@ public class Bone {
 
 		for (Cube cuboid : cuboids) {
 			if ((!cuboid.rotation().equals(0F, 0F, 0F) || !cuboid.pivot().equals(0F, 0F, 0F))) {
-				cuboid.bake(cubes, pivot.sub(
-					0,
-					0,
-					0,
-					new Vector3f()
-				));
+				deferred.add(cuboid);
 			} else {
 				cuboid.bake(cubes, pivot.sub(
 					0,
@@ -86,7 +81,7 @@ public class Bone {
 				name + "_r" + (i + 1),
 				builder,
 				PartPose.offsetAndRotation(
-					corigin.x(), corigin.y(), corigin.z(),
+					0,0,0,
 					cuboid.rotation().x(), cuboid.rotation().y(), cuboid.rotation().z()
 				)
 			);
