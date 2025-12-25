@@ -70,7 +70,7 @@ public class SpectreModelLoader {
 								var rootPart = mesh.getRoot();
 
 								for (Bone bone : rootBones) {
-									bone.bake(rootPart, null);
+									bone.bake(rootPart, null); //recursively bake bones, starting from root bones
 								}
 
 								results.put(
