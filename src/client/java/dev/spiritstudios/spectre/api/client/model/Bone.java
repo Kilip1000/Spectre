@@ -37,11 +37,16 @@ public class Bone {
 		boolean hasParent = parentBone != null;
 
 		var origin = new Vector3f(pivot);
-		//if (hasParent) origin.sub(parentBone.pivot); //why? Does this not just move you to the center?
+		if (hasParent) origin.sub(parentBone.pivot); //actually, this does make sense
 
 		for (Cube cuboid : cuboids) {
 			if ((!cuboid.rotation().equals(0F, 0F, 0F) || !cuboid.pivot().equals(0F, 0F, 0F))) {
-				deferred.add(cuboid);
+				cuboid.bake(cubes, pivot.sub(
+					0,
+					0,
+					0,
+					new Vector3f()
+				));
 			} else {
 				cuboid.bake(cubes, pivot.sub(
 					0,
